@@ -123,7 +123,7 @@ Django REST Framework API view that handles user requests for fetching personali
 ### Steps:
 1. Clone the repository from GitHub.
 2. Navigate to the project directory.
-3. You need to complete the secrets (API key and email password) for the code to work.(gemini ai,news bi api, email+password) 
+3. You need to complete the secrets (API key and email password) for the code to work.(gemini ai,news api, email+password) 
 4. Run `docker-compose up` to start the application. There is for every project docker-compose file. You have to start them all up. (If there is a problem with the UserData server, this should be done)
 
 ### Testing the Application:

@@ -1,0 +1,16 @@
+services:
+  ainewssummaryprocessingservice:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python manage.py runserver 0.0.0.0:8019
+    ports:
+      - 8019:8019
+    volumes:
+      - .:/app
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    external: true

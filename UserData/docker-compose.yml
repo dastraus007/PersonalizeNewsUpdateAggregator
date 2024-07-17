@@ -1,0 +1,57 @@
+services:
+  userdatabaseservice:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    #  command: [ "daprd", "-app-id", "userdatabaseservice", "-app-port", "8022", "-components-path", "/components", "--", "python", "manage.py", "runserver", "0.0.0.0:8022" ]
+    #    command: 'python manage.py runserver 0.0.0.0:8008'
+    ports:
+      - 8022:8022
+    volumes:
+      - .:/app
+    depends_on:
+      - userdatabase
+      - userdatabaseservice-dapr
+    networks:
+      - my_network
+
+
+
+  userdatabaseservice-dapr:
+    image: "daprio/daprd:1.4.2"
+   # command: [ "./daprd", "-app-id", "userdatabaseservice", "-app-port", "8022", "-components-path", "/components", "--", "python", "manage.py", "runserver", "0.0.0.0:8022" ]
+    command: [
+      "./daprd",
+      "-app-id", "userdatabaseservice",
+      "-app-port", "8022",
+      "-dapr-http-port", "3501",
+    ]
+    environment:
+      - DAPR_HTTP_PORT=3501
+      - DAPR_PUBSUB_MY_PUBSUB_TYPE=pubsub.redis
+      - DAPR_PUBSUB_MY_PUBSUB_VERSION=v1
+      - DAPR_PUBSUB_MY_PUBSUB_METADATA_redisHost=localhost:6379
+
+    ports:
+      - "3501:3501"
+    networks:
+      - my_network
+
+  userdatabase:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: user
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
+      MYSQL_ROOT_PASSWORD: user
+    volumes:
+      - .dbdata:/var/lib/mysql
+    ports:
+      - 33071:3306
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    external: true

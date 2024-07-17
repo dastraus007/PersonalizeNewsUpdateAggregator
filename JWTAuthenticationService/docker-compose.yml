@@ -1,0 +1,40 @@
+services:
+  jwtauthenticationservice:
+    build:
+      context: .
+      dockerfile: Dockerfile
+   # command: [ "daprd", "-app-id", "jwtauthenticationservice", "-app-port", "8018", "-components-path", "/components", "--", "python", "manage.py", "runserver", "0.0.0.0:8018" ]
+ #   command: "dapr run --app-id jwtauthenticationservice --app-port 8018 --dapr-http-port 3500 dotnet run"
+    ports:
+      - "8018:8018"
+    volumes:
+      - .:/app
+    depends_on:
+      - jwtauthenticationservice-dapr
+    networks:
+      - my_network
+
+  jwtauthenticationservice-dapr:
+    image: "daprio/daprd:1.4.2"
+
+    #command: [ "./daprd", "-app-id", "jwtauthenticationservice", "-app-port", "8018", "--", "python", "manage.py", "runserver", "0.0.0.0:8018" ]
+    command: [
+      "./daprd",
+      "-app-id", "jwtauthenticationservice",
+      "-app-port", "8018",
+      "-dapr-http-port", "3500",
+    ]
+    environment:
+      - DAPR_HTTP_PORT=3500
+      - DAPR_PUBSUB_MY_PUBSUB_TYPE=pubsub.redis
+      - DAPR_PUBSUB_MY_PUBSUB_VERSION=v1
+      - DAPR_PUBSUB_MY_PUBSUB_METADATA_redisHost=localhost:6379
+    ports:
+      - "3500:3500"
+    networks:
+      - my_network
+
+
+networks:
+  my_network:
+    external: true

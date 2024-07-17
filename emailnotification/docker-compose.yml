@@ -1,0 +1,17 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python manage.py runserver 0.0.0.0:8006
+    ports:
+      - 8006:8006
+    volumes:
+      - .:/app
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    external: true
+
